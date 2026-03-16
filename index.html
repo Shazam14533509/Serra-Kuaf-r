@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Serra Kuaför — İzmir Bornova</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Didact+Gothic&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #FAF6F1;
+      --blush: #E8C9BB;
+      --rose: #C9897A;
+      --deep-rose: #A05C52;
+      --mauve: #7D5A6A;
+      --dark: #2A1A1F;
+      --gold: #C9A96E;
+      --gold-light: #E8D5B0;
+      --text: #3D2B33;
+      --text-muted: #8C6E78;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Didact Gothic', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Fallback: if JS doesn't run, reveal elements still show */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+
+    /* Custom Cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease;
+      opacity: 0.6;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 20px;
+      padding: 28px 60px;
+      mix-blend-mode: normal;
+      transition: background 0.4s ease, padding 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(250,246,241,0.92);
+      backdrop-filter: blur(12px);
+      padding: 18px 60px;
+      border-bottom: 1px solid var(--gold-light);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--dark);
+      text-decoration: none;
+      position: relative;
+      z-index: 101;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dark);
+      background: transparent;
+      border: 1px solid var(--gold);
+      padding: 10px 26px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--gold); color: white; }
+
+    /* ── LANGUAGE SWITCHER ── */
+    .lang-switcher {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .lang-btn {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      padding: 6px 8px;
+      cursor: none;
+      transition: color 0.3s;
+      font-family: 'Didact Gothic', sans-serif;
+    }
+    .lang-btn:hover { color: var(--gold); }
+    .lang-btn.active { color: var(--gold); border-bottom: 1px solid var(--gold); }
+    .lang-sep { color: var(--gold-light); font-size: 0.6rem; }
+
+    /* ── SOCIAL ICONS ── */
+    .social-links {
+      display: flex; align-items: center; gap: 14px;
+      margin-right: 20px;
+    }
+    .social-link {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-light);
+      border-radius: 50%;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .social-link:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201,169,110,0.08);
+      transform: translateY(-2px);
+    }
+    .social-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* Footer social */
+    .footer-social {
+      display: flex; gap: 12px; margin-top: 14px; justify-content: center;
+    }
+    .footer-social-link {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 50%;
+      color: var(--gold-light);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .footer-social-link:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201,169,110,0.1);
+      transform: translateY(-2px);
+    }
+    .footer-social-link svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 60px 60px 80px;
+      position: relative; z-index: 2;
+    }
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: var(--gold);
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 6vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--dark);
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--rose);
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 2vw, 1.9rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.7s forwards;
+    }
+    .hero-desc {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: var(--text-muted);
+      max-width: 380px;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 20px; align-items: center;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.1s forwards;
+    }
+    .btn-primary {
+      background: var(--dark);
+      color: var(--cream);
+      padding: 16px 40px;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--gold);
+      transform: translateX(-101%);
+      transition: transform 0.4s ease;
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-secondary {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--blush);
+      padding-bottom: 4px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+    .hero-right {
+      position: relative; overflow: hidden;
+    }
+    .hero-image-wrapper {
+      width: 100%; height: 100%;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 1.4s ease 0.4s forwards;
+    }
+    .hero-bg {
+      width: 100%; height: 100%;
+      background:
+        linear-gradient(135deg, rgba(201,169,110,0.15) 0%, transparent 50%),
+        linear-gradient(to bottom, var(--blush) 0%, #D4A090 40%, #8B5E6A 100%);
+      position: relative;
+    }
+    /* Decorative circles */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.25) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .hero-ornament {
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      font-style: italic;
+    }
+    .hero-badge {
+      position: absolute;
+      bottom: 60px; left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: white;
+    }
+    .hero-badge-stars {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+    }
+    .hero-badge-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      opacity: 0.9;
+    }
+    .hero-badge-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* Year stamp */
+    .hero-year {
+      position: absolute;
+      bottom: 40px; left: 80px;
+      writing-mode: vertical-lr;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeIn 1s ease 1.5s forwards;
+      z-index: 3;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px; right: 60px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.8s forwards;
+      z-index: 3;
+    }
+    .scroll-line {
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+      animation: scrollPulse 2s ease infinite;
+    }
+    .scroll-text {
+      font-size: 0.6rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      border-top: 1px solid var(--gold-light);
+      border-bottom: 1px solid var(--gold-light);
+      padding: 18px 0;
+      overflow: hidden;
+      background: var(--dark);
+    }
+    .marquee-track {
+      display: flex; gap: 60px;
+      animation: marquee 25s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--gold-light);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 60px;
+    }
+    .marquee-item::after {
+      content: '✦';
+      font-style: normal;
+      font-size: 0.5rem;
+      color: var(--gold);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 140px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 100px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #about::before {
+      content: 'S';
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40rem;
+      color: rgba(201,137,122,0.04);
+      right: -60px; top: -100px;
+      font-weight: 300;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--gold);
+    }
+    .about-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--dark);
+      margin-bottom: 36px;
+    }
+    .about-title em { font-style: italic; color: var(--rose); }
+    .about-text {
+      font-size: 0.92rem;
+      line-height: 2;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .about-stats {
+      display: flex; gap: 50px; margin-top: 56px;
+    }
+    .stat-item {}
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .stat-number span { color: var(--gold); font-style: italic; }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .about-visual {
+      position: relative;
+      padding-top: 30px;
+      padding-right: 30px;
+    }
+    .about-card {
+      background: linear-gradient(135deg, var(--blush) 0%, #C4877A 60%, var(--mauve) 100%);
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card::before {
+      content: '';
+      position: absolute; inset: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none;
+    }
+    .about-card-text {
+      position: absolute; bottom: 40px; left: 40px; right: 40px;
+      color: white;
+    }
+    .about-card-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .about-card-author {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .about-float {
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 160px; height: 160px;
+      background: var(--cream);
+      border: 1px solid var(--gold-light);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .about-float-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .about-float-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* ── SERVICES ── */
+    #services {
+      padding: 140px 80px;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+    }
+    #services::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 70%);
+      top: 50%; right: -200px;
+      transform: translateY(-50%);
+    }
+    .services-header {
+      text-align: center; margin-bottom: 90px;
+    }
+    .services-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5vw, 5.5rem);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-top: 16px;
+    }
+    .services-title em { font-style: italic; color: var(--gold); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      padding: 56px 44px;
+      border: 1px solid rgba(201,169,110,0.12);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: none;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,169,110,0.08) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .service-card:hover { border-color: rgba(201,169,110,0.35); }
+    .service-card:hover::before { opacity: 1; }
+    .service-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 300;
+      color: rgba(201,169,110,0.1);
+      line-height: 1;
+      margin-bottom: 24px;
+      transition: color 0.4s;
+    }
+    .service-card:hover .service-number { color: rgba(201,169,110,0.25); }
+    .service-icon { font-size: 1.8rem; margin-bottom: 20px; }
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--cream);
+      margin-bottom: 14px;
+    }
+    .service-desc {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: rgba(250,246,241,0.45);
+    }
+    .service-arrow {
+      display: inline-block;
+      margin-top: 28px;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s;
+    }
+    .service-card:hover .service-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials {
+      padding: 140px 80px;
+      background: linear-gradient(135deg, #2A1A1F 0%, #3D2A35 50%, #2A1A1F 100%);
+      position: relative; overflow: hidden;
+    }
+    .testimonials-bg-text {
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20rem;
+      color: rgba(201,169,110,0.04);
+      bottom: -50px; right: -40px;
+      font-style: italic;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .testimonials-header {
+      text-align: center; margin-bottom: 80px;
+    }
+    .testimonials-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-top: 16px;
+    }
+    .testimonials-title em { font-style: italic; color: var(--gold); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .testimonial-card {
+      padding: 50px 40px;
+      border: 1px solid rgba(201,169,110,0.1);
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .testimonial-card:hover { border-color: rgba(201,169,110,0.3); }
+    .testimonial-quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      color: var(--gold);
+      line-height: 0.5;
+      margin-bottom: 30px;
+      opacity: 0.4;
+    }
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.8;
+      color: rgba(250,246,241,0.8);
+      margin-bottom: 30px;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .testimonial-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), var(--mauve));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: white;
+      font-style: italic;
+    }
+    .testimonial-name {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+    }
+    .testimonial-since {
+      font-size: 0.65rem;
+      color: rgba(250,246,241,0.35);
+      margin-top: 3px;
+    }
+    .stars {
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    /* ── CONTACT / INFO ── */
+    #contact {
+      padding: 140px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .contact-left {}
+    .contact-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      font-weight: 300;
+      color: var(--dark);
+      line-height: 1.1;
+      margin-bottom: 40px;
+      margin-top: 16px;
+    }
+    .contact-title em { font-style: italic; color: var(--rose); }
+    .contact-info-items { display: flex; flex-direction: column; gap: 30px; }
+    .contact-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--gold-light);
+    }
+    .contact-item:last-child { border-bottom: none; }
+    .contact-item-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+    .contact-item-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .contact-item-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--dark);
+    }
+    .contact-item-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .contact-right {}
+    .hours-card {
+      background: var(--dark);
+      padding: 56px 50px;
+      position: relative;
+    }
+    .hours-card::before {
+      content: '';
+      position: absolute;
+      top: 20px; left: 20px; right: 20px; bottom: 20px;
+      border: 1px solid rgba(201,169,110,0.15);
+      pointer-events: none;
+    }
+    .hours-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 36px;
+    }
+    .hours-title span { color: var(--gold); }
+    .hours-list { display: flex; flex-direction: column; gap: 14px; }
+    .hours-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .hours-day {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(250,246,241,0.45);
+    }
+    .hours-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .hours-time.closed { color: rgba(250,246,241,0.2); }
+    .hours-divider {
+      width: 100%; height: 1px;
+      background: rgba(201,169,110,0.1);
+      margin: 6px 0;
+    }
+    .booking-note {
+      margin-top: 36px;
+      padding: 20px;
+      border-left: 2px solid var(--gold);
+      background: rgba(201,169,110,0.05);
+    }
+    .booking-note p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--gold-light);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(201,169,110,0.15);
+      padding: 60px 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--cream);
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-center {
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(250,246,241,0.25);
+      line-height: 2;
+    }
+    .footer-right {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--gold);
+      text-align: right;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media (hover: none) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
+    @media (max-width: 1024px) {
+      nav { padding: 22px 36px; }
+      nav.scrolled { padding: 16px 36px; }
+      .nav-links { gap: 24px; }
+
+      #hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 120px 36px 60px 36px; }
+      .hero-right { height: 420px; }
+      .hero-year { left: 36px; }
+      .scroll-indicator { right: 36px; }
+
+      #about { padding: 100px 36px; gap: 60px; }
+      #services { padding: 100px 36px; }
+      #testimonials { padding: 100px 36px; }
+      #contact { padding: 100px 36px; gap: 60px; }
+      footer { padding: 50px 36px; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 18px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+      .nav-links { display: none; }
+
+      #hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 100px 24px 50px 24px; }
+      .hero-right { height: 360px; }
+      .hero-year { display: none; }
+      .scroll-indicator { display: none; }
+
+      #about {
+        grid-template-columns: 1fr;
+        padding: 80px 24px;
+        gap: 50px;
+      }
+      .about-stats { gap: 30px; flex-wrap: wrap; }
+      .about-float { top: -20px; right: -10px; width: 130px; height: 130px; }
+
+      .services-grid { grid-template-columns: 1fr; gap: 2px; }
+      .service-card { padding: 40px 30px; }
+
+      .testimonials-grid { grid-template-columns: 1fr; gap: 2px; }
+      .testimonial-card { padding: 36px 28px; }
+
+      #contact {
+        grid-template-columns: 1fr;
+        padding: 80px 24px;
+      }
+      .hours-card { padding: 40px 32px; }
+
+      footer {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        padding: 40px 24px;
+      }
+      .footer-right { text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 3rem; }
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">Serra <span>Kuaför</span></a>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav_about">Hakkımızda</a></li>
+      <li><a href="#services" data-i18n="nav_services">Hizmetler</a></li>
+      <li><a href="#testimonials" data-i18n="nav_testimonials">Yorumlar</a></li>
+    </ul>
+    <div class="social-links">
+      <a href="https://www.instagram.com/serrakuafor/" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/serrakuaforfigen/" target="_blank" rel="noopener" class="social-link" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('tr')">TR</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="tel:+902323434219" class="nav-cta" data-i18n="nav_cta">Randevu Al</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow" data-i18n="hero_eyebrow">İzmir Bornova — Est. 1998</p>
+      <h1 class="hero-title">Serra<br/><em>Kuaför</em></h1>
+      <p class="hero-subtitle" data-i18n="hero_subtitle">Güzelliğiniz, Sanatımız</p>
+      <p class="hero-desc" data-i18n="hero_desc">
+        Yirmi sekiz yılı aşkın deneyimimizle saçınıza özel bir dokunuş sunuyoruz. 
+        Profesyonel ekibimiz, en yeni teknolojiler ve premium ürünlerle 
+        sizin için burada.
+      </p>
+      <div class="hero-actions">
+        <a href="tel:+902323434219" class="btn-primary"><span data-i18n="hero_cta">Randevu Al</span></a>
+        <a href="#services" class="btn-secondary" data-i18n="hero_secondary">Hizmetleri Keşfet</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-image-wrapper">
+        <div class="hero-bg">
+          <div class="hero-ornament">S</div>
+          <div class="hero-badge">
+            <div class="hero-badge-stars">★ ★ ★ ★ ★</div>
+            <div class="hero-badge-text">48 Mutlu Müşteri</div>
+            <div class="hero-badge-sub">Google Reviews</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-year">İzmir · Bornova · 1998</div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Keşfet</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">Saç Kesimi</div>
+      <div class="marquee-item">Boya & Röfle</div>
+      <div class="marquee-item">Yeni Nesil Perma</div>
+      <div class="marquee-item">Lazer Epilasyon</div>
+      <div class="marquee-item">Tırnak Bakımı</div>
+      <div class="marquee-item">Saç Bakımı</div>
+      <div class="marquee-item">Keratin Bakımı</div>
+      <div class="marquee-item">Ombre & Balayage</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">Saç Kesimi</div>
+      <div class="marquee-item">Boya & Röfle</div>
+      <div class="marquee-item">Yeni Nesil Perma</div>
+      <div class="marquee-item">Lazer Epilasyon</div>
+      <div class="marquee-item">Tırnak Bakımı</div>
+      <div class="marquee-item">Saç Bakımı</div>
+      <div class="marquee-item">Keratin Bakımı</div>
+      <div class="marquee-item">Ombre & Balayage</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-left reveal">
+      <div class="section-label" data-i18n="about_label">Hakkımızda</div>
+      <h2 class="about-title" data-i18n="about_title">28 Yılın<br/><em>Güven &</em><br/>Uzmanlığı</h2>
+      <p class="about-text" data-i18n="about_text1">
+        Serra Kuaför, 1998 yılından bu yana İzmir Bornova'da kadınların güzellik 
+        yolculuğuna eşlik etmektedir. Serra ve Figen hanımların liderliğinde, 
+        dinamik ve deneyimli ekibimiz her müşterimize özel bir deneyim sunar.
+      </p>
+      <p class="about-text" data-i18n="about_text2">
+        Hijyene verdiğimiz önem, kullandığımız premium ürünler ve en güncel 
+        tekniklerle saçınızı hayalinizdeki görünüme kavuşturuyoruz.
+      </p>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-number">28<span>+</span></div>
+          <div class="stat-label" data-i18n="stat_years">Yıllık Deneyim</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4.8<span>★</span></div>
+          <div class="stat-label" data-i18n="stat_rating">Google Puanı</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1k<span>+</span></div>
+          <div class="stat-label" data-i18n="stat_clients">Mutlu Müşteri</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual reveal reveal-delay-2">
+      <div class="about-card">
+        <div class="about-card-text">
+          <p class="about-card-quote">"Her prosedürü aynı yerde yapıyoruz. Çok güzel, samimi bir yer."</p>
+          <p class="about-card-author">— Müşteri Yorumu</p>
+        </div>
+      </div>
+      <div class="about-float">
+        <div class="about-float-icon">✦</div>
+        <div class="about-float-text">Premium<br/>Bakım</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-header reveal">
+      <div class="section-label" style="justify-content:center; color: var(--gold);" data-i18n="services_label">Hizmetlerimiz</div>
+      <h2 class="services-title" data-i18n="services_title">Güzelliğin Her<br/><em>Detayına</em> Özen</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-number">01</div>
+        <div class="service-icon">✂️</div>
+        <h3 class="service-name" data-i18n="s1_name">Saç Kesimi</h3>
+        <p class="service-desc" data-i18n="s1_desc">Yüz şeklinize ve kişiliğinize özel kesim teknikleriyle en iyi versiyonunuza ulaşın.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-number">02</div>
+        <div class="service-icon">🎨</div>
+        <h3 class="service-name" data-i18n="s2_name">Boya & Röfle</h3>
+        <p class="service-desc" data-i18n="s2_desc">Ombre, balayage, röfle ve tekli boya uygulamalarıyla saçınıza renk katın.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-number">03</div>
+        <div class="service-icon">💫</div>
+        <h3 class="service-name" data-i18n="s3_name">Yeni Nesil Perma</h3>
+        <p class="service-desc" data-i18n="s3_desc">En güncel tekniklerle saçınıza hacim ve doğal dalga katın. Uzun süreli mükemmel görünüm.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-number">04</div>
+        <div class="service-icon">✨</div>
+        <h3 class="service-name" data-i18n="s4_name">Saç Bakımı</h3>
+        <p class="service-desc" data-i18n="s4_desc">Keratin tedavisi, nemlendirme maskeleri ve özel bakım protokolleriyle saç sağlığınızı koruyun.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-number">05</div>
+        <div class="service-icon">💅</div>
+        <h3 class="service-name" data-i18n="s5_name">Tırnak Bakımı</h3>
+        <p class="service-desc" data-i18n="s5_desc">Manikür, pedikür ve özel tırnak uygulamalarıyla elleriniz ve ayaklarınız bakımlı görünsün.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-number">06</div>
+        <div class="service-icon">🌸</div>
+        <h3 class="service-name" data-i18n="s6_name">Lazer Epilasyon</h3>
+        <p class="service-desc" data-i18n="s6_desc">Son teknoloji lazer sistemleriyle kalıcı epilasyon uygulamaları. Güvenli ve etkili sonuçlar.</p>
+        <span class="service-arrow" data-i18n="details">Detaylar →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="testimonials-bg-text">Serra</div>
+    <div class="testimonials-header reveal">
+      <div class="section-label" style="justify-content:center; color:var(--gold);" data-i18n="reviews_label">Müşteri Yorumları</div>
+      <h2 class="testimonials-title" data-i18n="reviews_title">Mutlu<br/><em>Müşterilerimiz</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text" data-i18n="t1_text">İşini kusursuz yapan tek adres burası. Yıllardır çok memnunum ve mükemmel sonuçlar aldım. Sizi tanıdığıma çok sevindim.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div>
+            <div class="testimonial-name">Ayşe H.</div>
+            <div class="testimonial-since" data-i18n="t1_since">Müşteri · 2018'den beri</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text" data-i18n="t2_text">Profesyonel ekip çalışması, harika hijyen. Bay Figen ve Serra ile yardımsever arkadaşları çok güzel. Her şey için çok teşekkürler.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
+          <div>
+            <div class="testimonial-name">Melike T.</div>
+            <div class="testimonial-since" data-i18n="t2_since">Müşteri · 2020'den beri</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text" data-i18n="t3_text">Serra Kuaför'ü 1998 yılında tanıdım. İletişime ve hijyene önem veriyor. Personeli sigara içmiyor, bu benim için önemli bir kriter.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">Z</div>
+          <div>
+            <div class="testimonial-name">Zeynep K.</div>
+            <div class="testimonial-since" data-i18n="t3_since">Sadık Müşteri · 1998'den beri</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-left reveal">
+      <div class="section-label" data-i18n="contact_label">İletişim & Adres</div>
+      <h2 class="contact-title" data-i18n="contact_title">Bizi<br/><em>Ziyaret</em><br/>Edin</h2>
+      <div class="contact-info-items">
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <div class="contact-item-label" data-i18n="contact_addr_label">Adres</div>
+            <div class="contact-item-value">Atatürk, 857. Sk. No:15 D:1</div>
+            <div class="contact-item-sub">35030 Bornova / İzmir, Türkiye</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div>
+            <div class="contact-item-label" data-i18n="contact_phone_label">Telefon</div>
+            <div class="contact-item-value">+90 232 343 42 19</div>
+            <div class="contact-item-sub" data-i18n="contact_phone_sub">Randevu için arayınız</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">⭐</div>
+          <div>
+            <div class="contact-item-label" data-i18n="contact_rating_label">Google Puanı</div>
+            <div class="contact-item-value">4.8 / 5.0</div>
+            <div class="contact-item-sub" data-i18n="contact_rating_sub">48 değerlendirme</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right reveal reveal-delay-2">
+      <div class="hours-card">
+        <h3 class="hours-title" data-i18n="hours_title">Çalışma <span data-i18n="hours_title_span">Saatleri</span></h3>
+        <div class="hours-list">
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_mon">Pazartesi</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_tue">Salı</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_wed">Çarşamba</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_thu">Perşembe</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_fri">Cuma</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_sat">Cumartesi</span>
+            <span class="hours-time">09:00 — 19:00</span>
+          </div>
+          <div class="hours-divider"></div>
+          <div class="hours-row">
+            <span class="hours-day" data-i18n="day_sun">Pazar</span>
+            <span class="hours-time closed" data-i18n="closed">Kapalı</span>
+          </div>
+        </div>
+        <div class="booking-note">
+          <p data-i18n="booking_note">Randevu için lütfen önceden arayınız. Size en uygun zamanı birlikte belirleyelim.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Serra <span>Kuaför</span></div>
+    <div class="footer-center">
+      © 2026 Serra Kuaför · <span data-i18n="footer_rights">Tüm Hakları Saklıdır</span><br/>
+      İzmir Bornova · +90 232 343 42 19
+      <div class="footer-social">
+        <a href="https://www.instagram.com/serrakuafor/" target="_blank" rel="noopener" class="footer-social-link" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/serrakuaforfigen/" target="_blank" rel="noopener" class="footer-social-link" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-right">Est. 1998<br/>İzmir, Türkiye</div>
+  </footer>
+
+  <script>
+    // ── TRANSLATIONS ──
+    const translations = {
+      tr: {
+        nav_about: 'Hakkımızda', nav_services: 'Hizmetler',
+        nav_testimonials: 'Yorumlar', nav_cta: 'Randevu Al',
+        hero_eyebrow: 'İzmir Bornova — Est. 1998',
+        hero_subtitle: 'Güzelliğiniz, Sanatımız',
+        hero_desc: 'Yirmi sekiz yılı aşkın deneyimimizle saçınıza özel bir dokunuş sunuyoruz. Profesyonel ekibimiz, en yeni teknolojiler ve premium ürünlerle sizin için burada.',
+        hero_cta: 'Randevu Al', hero_secondary: 'Hizmetleri Keşfet',
+        about_label: 'Hakkımızda',
+        about_title: '28 Yılın<br/><em>Güven &</em><br/>Uzmanlığı',
+        about_text1: 'Serra Kuaför, 1998 yılından bu yana İzmir Bornova\'da kadınların güzellik yolculuğuna eşlik etmektedir. Serra ve Figen hanımların liderliğinde, dinamik ve deneyimli ekibimiz her müşterimize özel bir deneyim sunar.',
+        about_text2: 'Hijyene verdiğimiz önem, kullandığımız premium ürünler ve en güncel tekniklerle saçınızı hayalinizdeki görünüme kavuşturuyoruz.',
+        stat_years: 'Yıllık Deneyim', stat_rating: 'Google Puanı', stat_clients: 'Mutlu Müşteri',
+        services_label: 'Hizmetlerimiz',
+        services_title: 'Güzelliğin Her<br/><em>Detayına</em> Özen',
+        s1_name: 'Saç Kesimi', s1_desc: 'Yüz şeklinize ve kişiliğinize özel kesim teknikleriyle en iyi versiyonunuza ulaşın.',
+        s2_name: 'Boya & Röfle', s2_desc: 'Ombre, balayage, röfle ve tekli boya uygulamalarıyla saçınıza renk katın.',
+        s3_name: 'Yeni Nesil Perma', s3_desc: 'En güncel tekniklerle saçınıza hacim ve doğal dalga katın. Uzun süreli mükemmel görünüm.',
+        s4_name: 'Saç Bakımı', s4_desc: 'Keratin tedavisi, nemlendirme maskeleri ve özel bakım protokolleriyle saç sağlığınızı koruyun.',
+        s5_name: 'Tırnak Bakımı', s5_desc: 'Manikür, pedikür ve özel tırnak uygulamalarıyla elleriniz ve ayaklarınız bakımlı görünsün.',
+        s6_name: 'Lazer Epilasyon', s6_desc: 'Son teknoloji lazer sistemleriyle kalıcı epilasyon uygulamaları. Güvenli ve etkili sonuçlar.',
+        details: 'Detaylar →',
+        reviews_label: 'Müşteri Yorumları', reviews_title: 'Mutlu<br/><em>Müşterilerimiz</em>',
+        t1_text: 'İşini kusursuz yapan tek adres burası. Yıllardır çok memnunum ve mükemmel sonuçlar aldım. Sizi tanıdığıma çok sevindim.',
+        t1_since: 'Müşteri · 2018\'den beri',
+        t2_text: 'Profesyonel ekip çalışması, harika hijyen. Bay Figen ve Serra ile yardımsever arkadaşları çok güzel. Her şey için çok teşekkürler.',
+        t2_since: 'Müşteri · 2020\'den beri',
+        t3_text: 'Serra Kuaför\'ü 1998 yılında tanıdım. İletişime ve hijyene önem veriyor. Personeli sigara içmiyor, bu benim için önemli bir kriter.',
+        t3_since: 'Sadık Müşteri · 1998\'den beri',
+        contact_label: 'İletişim & Adres', contact_title: 'Bizi<br/><em>Ziyaret</em><br/>Edin',
+        contact_addr_label: 'Adres', contact_phone_label: 'Telefon',
+        contact_phone_sub: 'Randevu için arayınız',
+        contact_rating_label: 'Google Puanı', contact_rating_sub: '48 değerlendirme',
+        hours_title: 'Çalışma', hours_title_span: 'Saatleri',
+        day_mon: 'Pazartesi', day_tue: 'Salı', day_wed: 'Çarşamba', day_thu: 'Perşembe',
+        day_fri: 'Cuma', day_sat: 'Cumartesi', day_sun: 'Pazar', closed: 'Kapalı',
+        booking_note: 'Randevu için lütfen önceden arayınız. Size en uygun zamanı birlikte belirleyelim.',
+        footer_rights: 'Tüm Hakları Saklıdır'
+      },
+      en: {
+        nav_about: 'About', nav_services: 'Services',
+        nav_testimonials: 'Reviews', nav_cta: 'Book Now',
+        hero_eyebrow: 'İzmir Bornova — Est. 1998',
+        hero_subtitle: 'Your Beauty, Our Art',
+        hero_desc: 'With over twenty-eight years of experience, we offer a personalized touch for your hair. Our professional team is here for you with the latest technologies and premium products.',
+        hero_cta: 'Book Now', hero_secondary: 'Explore Services',
+        about_label: 'About Us',
+        about_title: '28 Years of<br/><em>Trust &</em><br/>Expertise',
+        about_text1: 'Serra Kuaför has been accompanying women on their beauty journey in İzmir Bornova since 1998. Under the leadership of Serra and Figen, our dynamic and experienced team offers a personalized experience to every client.',
+        about_text2: 'With our commitment to hygiene, premium products, and the latest techniques, we bring your hair to its dream look.',
+        stat_years: 'Years Experience', stat_rating: 'Google Rating', stat_clients: 'Happy Clients',
+        services_label: 'Our Services',
+        services_title: 'Care for Every<br/><em>Detail</em> of Beauty',
+        s1_name: 'Haircut', s1_desc: 'Reach your best version with cutting techniques tailored to your face shape and personality.',
+        s2_name: 'Color & Highlights', s2_desc: 'Add color to your hair with ombre, balayage, highlights, and single-color applications.',
+        s3_name: 'Next-Gen Perm', s3_desc: 'Add volume and natural waves to your hair with the latest techniques. Long-lasting perfect look.',
+        s4_name: 'Hair Care', s4_desc: 'Protect your hair health with keratin treatments, moisturizing masks, and special care protocols.',
+        s5_name: 'Nail Care', s5_desc: 'Keep your hands and feet well-groomed with manicure, pedicure, and special nail applications.',
+        s6_name: 'Laser Epilation', s6_desc: 'Permanent epilation with state-of-the-art laser systems. Safe and effective results.',
+        details: 'Details →',
+        reviews_label: 'Client Reviews', reviews_title: 'Our Happy<br/><em>Clients</em>',
+        t1_text: 'This is the only place that does their job flawlessly. I have been very satisfied for years and got excellent results. So glad I found you.',
+        t1_since: 'Client · Since 2018',
+        t2_text: 'Professional teamwork, great hygiene. Figen and Serra with their helpful friends are wonderful. Thank you so much for everything.',
+        t2_since: 'Client · Since 2020',
+        t3_text: 'I discovered Serra Kuaför in 1998. They care about communication and hygiene. The staff does not smoke, which is an important criterion for me.',
+        t3_since: 'Loyal Client · Since 1998',
+        contact_label: 'Contact & Address', contact_title: 'Come<br/><em>Visit</em><br/>Us',
+        contact_addr_label: 'Address', contact_phone_label: 'Phone',
+        contact_phone_sub: 'Call for appointments',
+        contact_rating_label: 'Google Rating', contact_rating_sub: '48 reviews',
+        hours_title: 'Working', hours_title_span: 'Hours',
+        day_mon: 'Monday', day_tue: 'Tuesday', day_wed: 'Wednesday', day_thu: 'Thursday',
+        day_fri: 'Friday', day_sat: 'Saturday', day_sun: 'Sunday', closed: 'Closed',
+        booking_note: 'Please call ahead for an appointment. Let\'s find the most convenient time for you.',
+        footer_rights: 'All Rights Reserved'
+      },
+      es: {
+        nav_about: 'Nosotros', nav_services: 'Servicios',
+        nav_testimonials: 'Reseñas', nav_cta: 'Reservar',
+        hero_eyebrow: 'İzmir Bornova — Est. 1998',
+        hero_subtitle: 'Tu Belleza, Nuestro Arte',
+        hero_desc: 'Con más de veintiocho años de experiencia, ofrecemos un toque personalizado para tu cabello. Nuestro equipo profesional está aquí para ti con las últimas tecnologías y productos premium.',
+        hero_cta: 'Reservar', hero_secondary: 'Ver Servicios',
+        about_label: 'Sobre Nosotros',
+        about_title: '28 Años de<br/><em>Confianza &</em><br/>Experiencia',
+        about_text1: 'Serra Kuaför acompaña a las mujeres en su viaje de belleza en İzmir Bornova desde 1998. Bajo el liderazgo de Serra y Figen, nuestro equipo dinámico y experimentado ofrece una experiencia personalizada a cada cliente.',
+        about_text2: 'Con nuestro compromiso con la higiene, productos premium y las técnicas más actuales, llevamos tu cabello al aspecto de tus sueños.',
+        stat_years: 'Años de Experiencia', stat_rating: 'Puntuación Google', stat_clients: 'Clientes Felices',
+        services_label: 'Nuestros Servicios',
+        services_title: 'Cuidado en Cada<br/><em>Detalle</em> de Belleza',
+        s1_name: 'Corte de Cabello', s1_desc: 'Alcanza tu mejor versión con técnicas de corte adaptadas a tu forma de cara y personalidad.',
+        s2_name: 'Tinte & Mechas', s2_desc: 'Añade color a tu cabello con ombre, balayage, mechas y aplicaciones de color sólido.',
+        s3_name: 'Permanente Nueva Gen', s3_desc: 'Añade volumen y ondas naturales a tu cabello con las técnicas más actuales. Look perfecto duradero.',
+        s4_name: 'Cuidado Capilar', s4_desc: 'Protege la salud de tu cabello con tratamientos de keratina, mascarillas hidratantes y protocolos de cuidado especial.',
+        s5_name: 'Cuidado de Uñas', s5_desc: 'Mantén tus manos y pies cuidados con manicura, pedicura y aplicaciones especiales de uñas.',
+        s6_name: 'Depilación Láser', s6_desc: 'Depilación permanente con sistemas láser de última generación. Resultados seguros y efectivos.',
+        details: 'Detalles →',
+        reviews_label: 'Reseñas de Clientes', reviews_title: 'Nuestras<br/><em>Clientes Felices</em>',
+        t1_text: 'Este es el único lugar que hace su trabajo a la perfección. Llevo años muy satisfecha y he obtenido resultados excelentes. Muy contenta de haberlos encontrado.',
+        t1_since: 'Cliente · Desde 2018',
+        t2_text: 'Trabajo en equipo profesional, excelente higiene. Figen y Serra con sus amables compañeros son maravillosos. Muchas gracias por todo.',
+        t2_since: 'Cliente · Desde 2020',
+        t3_text: 'Descubrí Serra Kuaför en 1998. Se preocupan por la comunicación y la higiene. El personal no fuma, lo cual es un criterio importante para mí.',
+        t3_since: 'Clienta Fiel · Desde 1998',
+        contact_label: 'Contacto & Dirección', contact_title: 'Ven a<br/><em>Visitarnos</em>',
+        contact_addr_label: 'Dirección', contact_phone_label: 'Teléfono',
+        contact_phone_sub: 'Llama para reservar cita',
+        contact_rating_label: 'Puntuación Google', contact_rating_sub: '48 reseñas',
+        hours_title: 'Horario de', hours_title_span: 'Atención',
+        day_mon: 'Lunes', day_tue: 'Martes', day_wed: 'Miércoles', day_thu: 'Jueves',
+        day_fri: 'Viernes', day_sat: 'Sábado', day_sun: 'Domingo', closed: 'Cerrado',
+        booking_note: 'Por favor llame con antelación para su cita. Encontraremos juntos el momento más conveniente para usted.',
+        footer_rights: 'Todos los Derechos Reservados'
+      }
+    };
+
+    let currentLang = 'tr';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+      });
+      document.documentElement.lang = lang;
+    }
+
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    document.querySelectorAll('a, button, .service-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = 'var(--rose)'; });
+      el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'var(--gold)'; });
+    });
+
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
